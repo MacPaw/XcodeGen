@@ -58,13 +58,18 @@ public class Glob: Collection {
     public static let defaultBlacklistedDirectories = ["node_modules", "Pods"]
 
     private var isDirectoryCache = [String: Bool]()
+    private static var directoriesCache = [String: [URL]]()
 
     public let behavior: Behavior
     public let blacklistedDirectories: [String]
     var paths = [String]()
     public var startIndex: Int { paths.startIndex }
     public var endIndex: Int { paths.endIndex }
-
+    
+    
+    /// Holds cache for unwrapping patterns. This is useful when same patter is passed multiple times
+    private static var patternsCache: [String: [String]] = [:]
+    
     /// Initialize a glob
     ///
     /// - Parameters:
@@ -88,7 +93,13 @@ public class Glob: Collection {
             }
         }
 
-        let patterns = behavior.supportsGlobstar ? expandGlobstar(pattern: adjustedPattern) : [adjustedPattern]
+        var patterns: [String] = []
+        if let cached = Glob.patternsCache[pattern] {
+            patterns = cached
+        } else {
+            patterns = behavior.supportsGlobstar ? expandGlobstar(pattern: adjustedPattern) : [adjustedPattern]
+            Glob.patternsCache[pattern] = patterns
+        }
         
         #if os(macOS)
         paths = patterns.parallelMap { paths(usingPattern: $0, includeFiles: includeFiles) }.flatMap { $0 }
@@ -170,7 +181,10 @@ public class Glob: Collection {
     }
 
     private func exploreDirectories(path: String) throws -> [URL] {
-        try FileManager.default.contentsOfDirectory(atPath: path)
+        if let cached = Glob.directoriesCache[path] {
+            return cached
+        }
+        let result = try FileManager.default.contentsOfDirectory(atPath: path)
             .compactMap { subpath -> [URL]? in
                 if blacklistedDirectories.contains(subpath) {
                     return nil
@@ -189,6 +203,8 @@ public class Glob: Collection {
             }
             .joined()
             .array()
+        Glob.directoriesCache[path] = result
+        return result
     }
 
     private func isDirectory(path: String) -> Bool {
@@ -219,7 +235,6 @@ public class Glob: Collection {
     private func populateFiles(gt: glob_t, includeFiles: Bool) -> [String] {
         var paths = [String]()
         let includeDirectories = behavior.includesDirectoriesInResults
-
         #if os(macOS)
         let matches = Int(gt.gl_matchc)
         #else
