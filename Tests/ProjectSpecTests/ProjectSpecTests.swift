@@ -126,7 +126,7 @@ class ProjectSpecTests: XCTestCase {
                 project.settings = invalidSettings
                 project.configFiles = ["invalidConfig": "invalidConfigFile"]
                 project.fileGroups = ["invalidFileGroup"]
-                project.packages = ["invalidLocalPackage": .local(path: "invalidLocalPackage")]
+                project.packages = ["invalidLocalPackage": .local(path: "invalidLocalPackage", group: nil)]
                 project.settingGroups = ["settingGroup1": Settings(
                     configSettings: ["invalidSettingGroupConfig": [:]],
                     groups: ["invalidSettingGroupSettingGroup"]
@@ -463,6 +463,7 @@ class ProjectSpecTests: XCTestCase {
                                                                                                               parallelizable: false)],
                                                                          configVariants: ["foo"],
                                                                          gatherCoverageData: true,
+                                                                         coverageTargets: ["App"],
                                                                          storeKitConfiguration: "Configuration.storekit",
                                                                          disableMainThreadChecker: true,
                                                                          stopOnEveryMainThreadCheckerIssue: false,

@@ -32,9 +32,18 @@
         "package": "PathKit",
         "repositoryURL": "https://github.com/michaeleisel/PathKit.git",
         "state": {
-          "branch": null,
-          "revision": "3bfd2737b700b9a36565a8c94f4ad2b050a5e574",
-          "version": "1.0.1"
+          "branch": "me-fast",
+          "revision": "a2e1212c4c7fd333e84539b7f7e92a42df6f0893",
+          "version": null
+        }
+      },
+      {
+        "package": "PathKitCExt",
+        "repositoryURL": "https://github.com/michaeleisel/PathKitCExt.git",
+        "state": {
+          "branch": "master",
+          "revision": "fddd173ba9f67d97363e2631b444b4a7eb2f1cf6",
+          "version": null
         }
       },
       {
@@ -50,9 +59,9 @@
         "package": "Spectre",
         "repositoryURL": "https://github.com/kylef/Spectre.git",
         "state": {
-          "branch": null,
+          "branch": "master",
           "revision": "26cc5e9ae0947092c7139ef7ba612e34646086c7",
-          "version": "0.10.1"
+          "version": null
         }
       },
       {

@@ -75,6 +75,7 @@ extension FileType {
 
         // sources
         "swift": FileType(buildPhase: .sources),
+        "gyb": FileType(buildPhase: .sources),
         "m": FileType(buildPhase: .sources),
         "mm": FileType(buildPhase: .sources),
         "cpp": FileType(buildPhase: .sources),
@@ -88,6 +89,7 @@ extension FileType {
         "mlmodel": FileType(buildPhase: .sources),
         "rcproject": FileType(buildPhase: .sources),
         "iig": FileType(buildPhase: .sources),
+        "docc": FileType(buildPhase: .sources),
 
         // headers
         "h": FileType(buildPhase: .headers),
@@ -112,6 +114,5 @@ extension FileType {
         "xcfilelist": FileType(buildPhase: BuildPhaseSpec.none),
         "apns": FileType(buildPhase: BuildPhaseSpec.none),
         "pch": FileType(buildPhase: BuildPhaseSpec.none),
-        "docc": FileType(buildPhase: BuildPhaseSpec.none),
     ]
 }
