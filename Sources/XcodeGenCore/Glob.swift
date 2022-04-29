@@ -57,9 +57,14 @@ public class Glob: Collection {
 
     public static let defaultBlacklistedDirectories = ["node_modules", "Pods"]
 
-    private var isDirectoryCache = [String: Bool]()
-    private static var directoriesCache = [String: [URL]]()
+    @Atomic private var isDirectoryCache = [String: Bool]()
+    
+    /// Holds information for directories contens for specified path
+    @Atomic private static var directoriesCache = [String: [URL]]()
 
+    /// Holds cache for unwrapping patterns. This is useful when same patter is passed multiple times
+    @Atomic private static var patternsCache: [String: [String]] = [:]
+    
     public let behavior: Behavior
     public let blacklistedDirectories: [String]
     var paths = [String]()
@@ -93,7 +98,7 @@ public class Glob: Collection {
             }
         }
 
-        var patterns: [String] = []
+        let patterns: [String]
         if let cached = Glob.patternsCache[pattern] {
             patterns = cached
         } else {
@@ -217,6 +222,11 @@ public class Glob: Collection {
         isDirectoryCache[path] = isDirectory
 
         return isDirectory
+    }
+    
+    static func clearGlobalCaches() {
+        directoriesCache.removeAll()
+        patternsCache.removeAll()
     }
 
     private func clearCaches() {
