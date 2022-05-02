@@ -6,6 +6,7 @@ import XcodeProj
 import XCTest
 import Yams
 import TestSupport
+@testable import XcodeGenCore
 
 class SourceGeneratorTests: XCTestCase {
 
@@ -53,6 +54,7 @@ class SourceGeneratorTests: XCTestCase {
 
             $0.after {
                 removeDirectories()
+                Glob.clearGlobalCaches()
             }
 
             $0.it("generates source groups") {
