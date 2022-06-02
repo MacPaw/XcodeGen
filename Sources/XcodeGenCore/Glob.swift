@@ -61,9 +61,6 @@ public class Glob: Collection {
     
     /// Holds information for directories contens for specified path
     @Atomic private static var directoriesCache = [String: [URL]]()
-
-    /// Holds cache for unwrapping patterns. This is useful when same patter is passed multiple times
-    @Atomic private static var patternsCache: [String: [String]] = [:]
     
     public let behavior: Behavior
     public let blacklistedDirectories: [String]
@@ -73,7 +70,7 @@ public class Glob: Collection {
     
     
     /// Holds cache for unwrapping patterns. This is useful when same patter is passed multiple times
-    private static var patternsCache: [String: [String]] = [:]
+    @Atomic private static var patternsCache: [String: [String]] = [:]
     
     /// Initialize a glob
     ///
@@ -208,7 +205,9 @@ public class Glob: Collection {
             }
             .joined()
             .array()
-        Glob.directoriesCache[path] = result
+        Glob.$directoriesCache.with { directoriesCache in
+            directoriesCache[path] = result
+        }
         return result
     }
 
@@ -219,8 +218,9 @@ public class Glob: Collection {
 
         var isDirectoryBool = ObjCBool(false)
         let isDirectory = FileManager.default.fileExists(atPath: path, isDirectory: &isDirectoryBool) && isDirectoryBool.boolValue
-        isDirectoryCache[path] = isDirectory
-
+        $isDirectoryCache.with { isDirectoryCache in
+            isDirectoryCache[path] = isDirectory
+        }
         return isDirectory
     }
     
@@ -230,7 +230,9 @@ public class Glob: Collection {
     }
 
     private func clearCaches() {
-        isDirectoryCache.removeAll()
+        $isDirectoryCache.with { isDirectoryCache in
+            isDirectoryCache.removeAll()
+        }
     }
 
     private func paths(usingPattern pattern: String, includeFiles: Bool) -> [String] {
